@@ -1,0 +1,23 @@
+{
+  "name": "node-configenv",
+  "version": "0.0.1",
+  "description": "Helper for manage nodejs configuration uding environment varriables",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "node",
+    "config",
+    "configuration",
+    "env"
+  ],
+  "author": "Dormi",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "5.0.0"
+  },
+  "devDependencies": {
+    "jest": "^22.1.4"
+  }
+}
