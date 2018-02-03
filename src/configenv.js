@@ -38,7 +38,7 @@ class ConfigEnv {
                 option = {default: option};
             }
 
-            const keyParts = envKeys[i].toLowerCase().split('_');
+            const keyParts = envKeys[i].toLowerCase().split('__').filter(k => !!k && k !== '_');
             const value = this.resolveOptionValue(envKeys[i], option);
             this.extendObjectWithValue(config, keyParts, value);
         }
@@ -64,13 +64,20 @@ class ConfigEnv {
 
 
     extendObjectWithValue(object, properties, value) {
+        const camelCaseProperty = this.formatPropertyToCamelCase(properties[0]);
+
         if (properties.length === 1) {
-            object[properties[0]] = value;
+            object[camelCaseProperty] = value;
             return;
         }
+        object[camelCaseProperty] = object[camelCaseProperty] || {};
+        return this.extendObjectWithValue(object[camelCaseProperty], properties.slice(1), value);
+    }
 
-        object[properties[0]] = object[properties[0]] || {};
-        return this.extendObjectWithValue(object[properties[0]], properties.slice(1), value);
+    formatPropertyToCamelCase(property) {
+        return property.split('_')
+            .filter(p => !!p)
+            .reduce((acc, cur, i) => i !== 0 ? `${acc}${cur.charAt(0).toUpperCase() + cur.slice(1)}` : cur, '');
     }
 
     doOptionalActions() {

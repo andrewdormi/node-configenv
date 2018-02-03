@@ -24,7 +24,7 @@ describe('ConfigEnv Test', () => {
             MONGO_URL: 'asd'
         });
         expect(configEnv.config.option).toBe('qwe');
-        expect(configEnv.config.mongo.url).toBe('asd');
+        expect(configEnv.config.mongoUrl).toBe('asd');
     });
 
     it('Test parsing default options 1', () => {
@@ -33,7 +33,7 @@ describe('ConfigEnv Test', () => {
             MONGO_URL: {default: 'asd'}
         });
         expect(configEnv.config.option).toBe('qwe');
-        expect(configEnv.config.mongo.url).toBe('asd');
+        expect(configEnv.config.mongoUrl).toBe('asd');
     });
 
     it('Test parsing default options 2', () => {
@@ -43,7 +43,7 @@ describe('ConfigEnv Test', () => {
             MONGO_URL: {default: 'asd'}
         });
         expect(configEnv.config.optiontest).toBe('ert');
-        expect(configEnv.config.mongo.url).toBe('asd');
+        expect(configEnv.config.mongoUrl).toBe('asd');
     });
 
     it('Should throw on missed required field', () => {
@@ -60,7 +60,7 @@ describe('ConfigEnv Test', () => {
             MONGO_URL: {default: 'asd'}
         });
         expect(configEnv.config.optiontest).toBe('ert');
-        expect(configEnv.config.mongo.url).toBe('asd');
+        expect(configEnv.config.mongoUrl).toBe('asd');
     });
 
     it('Set global config', () => {
@@ -69,7 +69,7 @@ describe('ConfigEnv Test', () => {
             MONGO_URL: {default: 'asd'}
         }, {global: true});
         expect(config.option).toBe('qwe');
-        expect(config.mongo.url).toBe('asd');
+        expect(config.mongoUrl).toBe('asd');
     });
 
     it('Should parse number', () => {
@@ -79,6 +79,37 @@ describe('ConfigEnv Test', () => {
             MONGO_URL: {default: 'asd'}
         }, {parse: true});
         expect(configEnv.config.optiontest).toBe(5);
-        expect(configEnv.config.mongo.url).toBe('asd');
+        expect(configEnv.config.mongoUrl).toBe('asd');
+    });
+
+    it('Should correctly parse options', () => {
+        const configEnv = new ConfigEnv({
+            OPTIONTEST: {default: 'qwe'},
+            MONGO_URL: {default: 'asd'},
+            API__PORT: {default: 'rty'},
+            API__REDIS__PASSWORD: {default: 'password'},
+            API__REDIS__LOGIN: {default: 'login'},
+            API__REDIS__DB_PREFIX: {default: 'prefix'}
+        }, {parse: true});
+        expect(configEnv.config.optiontest).toBe('qwe');
+        expect(configEnv.config.mongoUrl).toBe('asd');
+        expect(configEnv.config.api.port).toBe('rty');
+        expect(configEnv.config.api.redis.password).toBe('password');
+        expect(configEnv.config.api.redis.login).toBe('login');
+        expect(configEnv.config.api.redis.dbPrefix).toBe('prefix');
+    });
+
+    it('Should parse invalid format', () => {
+        const configEnv = new ConfigEnv({
+            API__REDIS__DB_SOME_: {default: 'some'},
+            _API__REDIS__DB_SOME2__: {default: 'some2'},
+            ______API______REDIS_____DB_SOME3_______: {default: 'some3'},
+            __API___reDiS__DB_SOME4__: {default: 'some4'}
+        }, {parse: true});
+
+        expect(configEnv.config.api.redis.dbSome).toBe('some');
+        expect(configEnv.config.api.redis.dbSome2).toBe('some2');
+        expect(configEnv.config.api.redis.dbSome3).toBe('some3');
+        expect(configEnv.config.api.redis.dbSome4).toBe('some4');
     });
 });
