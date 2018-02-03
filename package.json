@@ -1,8 +1,11 @@
 {
-  "name": "node-configenv",
-  "version": "0.0.1",
+  "name": "@dormi/node-configenv",
+  "version": "0.0.2",
   "description": "Helper for manage nodejs configuration using environment varriables",
   "main": "index.js",
+  "engines": {
+    "node": ">=6.4.0"
+  },
   "scripts": {
     "test": "jest"
   },
