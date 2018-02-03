@@ -1,8 +1,14 @@
+const DotEnv = require('./dotenv');
+
 class ConfigEnv {
     constructor(environment, options = {}) {
         this.validateEnvironmentOption(environment);
         this.validateConfigOptions(options);
 
+        if (options.envFile) {
+            this.dotEnv = new DotEnv();
+            this.dotEnv.loadEnvFile(options.envFile);
+        }
         this.options = options;
         this.config = this.parseEnvironment(environment);
 
@@ -51,6 +57,7 @@ class ConfigEnv {
             try {
                 processValue = JSON.parse(processValue);
             } catch (err) {
+                // use value as string
             }
         }
 

@@ -18,6 +18,10 @@ describe('ConfigEnv Test', () => {
         expect(() => new ConfigEnv({}, 'qwe')).toThrow();
     });
 
+    it('Should throw on null options', () => {
+        expect(() => new ConfigEnv({API__PORT: null})).toThrow();
+    });
+
     it('Test parsing default options 0', () => {
         const configEnv = new ConfigEnv({
             OPTION: 'qwe',
@@ -111,5 +115,16 @@ describe('ConfigEnv Test', () => {
         expect(configEnv.config.api.redis.dbSome2).toBe('some2');
         expect(configEnv.config.api.redis.dbSome3).toBe('some3');
         expect(configEnv.config.api.redis.dbSome4).toBe('some4');
+    });
+
+    it('Should load configuration with env file', () => {
+        const configEnv = new ConfigEnv({
+            API__PORT: {required: true},
+            API__REDIS__PASSWORD: {required: true},
+            API__REDIS__LOGIN: {required: true}
+        }, {envFile: true});
+        expect(configEnv.config.api.port).toBe('rty');
+        expect(configEnv.config.api.redis.password).toBe('password');
+        expect(configEnv.config.api.redis.login).toBe('login');
     });
 });
